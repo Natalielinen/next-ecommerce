@@ -22,6 +22,13 @@
       "when": 1744955142966,
       "tag": "0002_hard_captain_stacy",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1745214776420,
+      "tag": "0003_thin_madame_masque",
+      "breakpoints": true
     }
   ]
 }
