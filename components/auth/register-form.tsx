@@ -4,46 +4,38 @@ import { useForm } from "react-hook-form";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
 import { AuthCard } from "./auth-card";
 import { zodResolver } from '@hookform/resolvers/zod';
-import { LoginFormType, loginSchema } from "@/types/login-schema";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import Link from "next/link";
-import { emailSignin } from "@/server/actions/email-signin";
 import { useAction } from "next-safe-action/hooks";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
+import { RegisterFormType, registerSchema } from "@/types/register-schema";
 
+export const RegisterForm = () => {
 
-export const LoginForm = () => {
-
-    const form = useForm<LoginFormType>({
-        resolver: zodResolver(loginSchema),
+    const form = useForm<RegisterFormType>({
+        resolver: zodResolver(registerSchema),
         defaultValues: {
             email: '',
-            password: ''
+            password: '',
+            name: '',
         }
     });
 
-    // const [error, setError] = useState<string>("");
-
-    const { execute, status } = useAction(emailSignin, {
-        onSuccess: (data) => {
-            console.log(data);
-        }
-    });
+    //  const { execute, status } = useAction();
 
     const { handleSubmit, control } = form;
 
-    const onSubmit = (data: LoginFormType) => {
-        execute(data);
+    const onSubmit = (data: RegisterFormType) => {
+        //  execute(data);
 
     };
 
     return (
         <AuthCard
-            cardTitle="Welcome back!"
-            backButtonHref="/auth/register"
-            backButtonLabel="Create a new account"
+            cardTitle="Create an account"
+            backButtonHref="auth/login"
+            backButtonLabel="Already have an account?"
             showSocials
         >
             <div>
@@ -71,6 +63,24 @@ export const LoginForm = () => {
                             />
                             <FormField
                                 control={control}
+                                name="name"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Name</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                placeholder="Name"
+                                                type="text"
+                                                {...field}
+                                            />
+                                        </FormControl>
+                                        <FormDescription />
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={control}
                                 name="password"
                                 render={({ field }) => (
                                     <FormItem>
@@ -83,9 +93,6 @@ export const LoginForm = () => {
                                     </FormItem>
                                 )}
                             />
-                            <Button variant="link" size="sm" type="button" asChild>
-                                <Link href="/auth/reset">Forgot your password</Link>
-                            </Button>
                         </div>
                         <Button
                             type="submit"
@@ -93,7 +100,7 @@ export const LoginForm = () => {
                                 "w-full my-2",
                                 status === "executing" ? "animate-pulse" : ""
                             )}
-                        >Login</Button>
+                        >Register</Button>
                     </form>
                 </Form>
             </div>
