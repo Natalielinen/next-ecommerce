@@ -6,10 +6,10 @@ import { AuthCard } from "./auth-card";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import Link from "next/link";
 import { useAction } from "next-safe-action/hooks";
 import { cn } from "@/lib/utils";
 import { RegisterFormType, registerSchema } from "@/types/register-schema";
+import { emailRegister } from "@/server/actions/email-register";
 
 export const RegisterForm = () => {
 
@@ -22,12 +22,16 @@ export const RegisterForm = () => {
         }
     });
 
-    //  const { execute, status } = useAction();
+    const { execute, status } = useAction(emailRegister, {
+        onSuccess: (data) => {
+            console.log(data);
+        }
+    });
 
     const { handleSubmit, control } = form;
 
     const onSubmit = (data: RegisterFormType) => {
-        //  execute(data);
+        execute(data);
 
     };
 
