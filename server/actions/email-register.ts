@@ -6,6 +6,7 @@ import { eq } from 'drizzle-orm';
 import { users } from '../schema';
 import { registerSchema } from '@/types/register-schema';
 import bcrypt from 'bcrypt';
+import { generateEmailVerificationToken } from './tokens';
 
 const actionClient = createSafeActionClient();
 
@@ -14,21 +15,31 @@ export const emailRegister = actionClient
     .action(async ({ parsedInput: { email, password, name } }) => {
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        console.log(email, hashedPassword, name);
-        
-
+     
         const existingUser = await db.query.users.findFirst({
             where: eq(users.email, email),
         });
 
         if (existingUser) {
             if(!existingUser.emailVerified) {
-                const verificationToken = await bcrypt.hash(email, 10);
-                return { error: 'Email not verified' };
+                const verificationToken = await generateEmailVerificationToken(email);
+                await sentVerificationEmail(email, verificationToken);
+
+                return { success: 'Email confirmation resent' };
             }
             return { error: 'Email already exists' };
         };
 
-        return { success: 'success'};
+        await db.insert(users).values({ 
+            email,
+            name 
+        });
         
+        const verificationToken = await generateEmailVerificationToken(email);
+
+        await sentVerificationEmail(email, verificationToken);
+
+        return { success: 'Email confirmation sent' };
+
+
     })
