@@ -7,6 +7,7 @@ import { users } from '../schema';
 import { registerSchema } from '@/types/register-schema';
 import bcrypt from 'bcrypt';
 import { generateEmailVerificationToken } from './tokens';
+import { sendVerificationEmail } from './emails';
 
 const actionClient = createSafeActionClient();
 
@@ -23,7 +24,7 @@ export const emailRegister = actionClient
         if (existingUser) {
             if(!existingUser.emailVerified) {
                 const verificationToken = await generateEmailVerificationToken(email);
-                await sentVerificationEmail(email, verificationToken);
+                await sendVerificationEmail(verificationToken[0].email, verificationToken[0].token);
 
                 return { success: 'Email confirmation resent' };
             }
@@ -37,9 +38,8 @@ export const emailRegister = actionClient
         
         const verificationToken = await generateEmailVerificationToken(email);
 
-        await sentVerificationEmail(email, verificationToken);
+        await sendVerificationEmail(verificationToken[0].email, verificationToken[0].token);
 
         return { success: 'Email confirmation sent' };
 
-
-    })
+    });
