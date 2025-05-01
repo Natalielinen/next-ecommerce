@@ -9,6 +9,7 @@ import { FormInfo } from "./form-info";
 export const EmailVerificationForm = () => {
 
     const token = useSearchParams().get('token');
+
     const router = useRouter();
 
     const [error, setError] = useState('');
