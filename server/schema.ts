@@ -1,4 +1,3 @@
-import { boolean } from "drizzle-orm/gel-core";
 import {
   timestamp,
   pgTable,
@@ -21,7 +20,6 @@ export const users = pgTable("user", {
   password: text("password"),
   emailVerified: timestamp("emailVerified", { mode: "date" }),
   image: text("image"),
- // twoFactorEnabled: boolean("twoFactorEnabled").default(false),
   role: RoleEnum("roles").default("user"),
 });
  
@@ -53,6 +51,23 @@ export const accounts = pgTable(
 
 export const emailTokens = pgTable(
   "email_tokens",
+  {
+    id: text("identifier").notNull().primaryKey().$defaultFn(() => createId()),
+    token: text("token").notNull(),
+    expires: timestamp("expires", { mode: "date" }).notNull(),
+    email: text("email").notNull(),
+  },
+  (verificationToken) => [
+    {
+      compositePk: primaryKey({
+        columns: [verificationToken.id, verificationToken.token],
+      }),
+    },
+  ]
+)
+
+export const passwordResetTokens = pgTable(
+  "password_reset_tokens",
   {
     id: text("identifier").notNull().primaryKey().$defaultFn(() => createId()),
     token: text("token").notNull(),

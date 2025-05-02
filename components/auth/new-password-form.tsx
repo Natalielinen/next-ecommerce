@@ -4,31 +4,29 @@ import { useForm } from "react-hook-form";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
 import { AuthCard } from "./auth-card";
 import { zodResolver } from '@hookform/resolvers/zod';
-import { LoginFormType, loginSchema } from "@/types/login-schema";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import Link from "next/link";
-import { emailSignin } from "@/server/actions/email-signin";
 import { useAction } from "next-safe-action/hooks";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { FormInfo } from "./form-info";
+import { NewPasswordFormType, newPasswordSchema } from "@/types/new-password-schema";
+import { newPassword } from "@/server/actions/new-password";
 
+export const NewPasswordForm = () => {
 
-export const LoginForm = () => {
-
-    const form = useForm<LoginFormType>({
-        resolver: zodResolver(loginSchema),
+    const form = useForm<NewPasswordFormType>({
+        resolver: zodResolver(newPasswordSchema),
         defaultValues: {
-            email: '',
-            password: ''
+            password: '',
+            token: ''
         }
     });
 
     const [error, setError] = useState<string>("");
     const [success, setSuccess] = useState<string>("");
 
-    const { execute, status } = useAction(emailSignin, {
+    const { execute, status } = useAction(newPassword, {
         onSuccess: (data) => {
             if (data?.data?.error) setError(data?.data?.error);
             if (data?.data?.success) setSuccess(data?.data?.success);
@@ -37,41 +35,22 @@ export const LoginForm = () => {
 
     const { handleSubmit, control } = form;
 
-    const onSubmit = (data: LoginFormType) => {
+    const onSubmit = (data: NewPasswordFormType) => {
         execute(data);
 
     };
 
     return (
         <AuthCard
-            cardTitle="Welcome back!"
-            backButtonHref="/auth/register"
-            backButtonLabel="Create a new account"
+            cardTitle="Enter a new password"
+            backButtonHref="/auth/login"
+            backButtonLabel="Back to login"
             showSocials
         >
             <div>
                 <Form {...form}>
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <div>
-                            <FormField
-                                control={control}
-                                name="email"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Email</FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                placeholder="Email"
-                                                type="email"
-                                                autoComplete="email"
-                                                {...field}
-                                            />
-                                        </FormControl>
-                                        <FormDescription />
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
                             <FormField
                                 control={control}
                                 name="password"
@@ -87,9 +66,6 @@ export const LoginForm = () => {
                                 )}
                             />
                             <FormInfo message={success || error} isError={!!error} />
-                            <Button variant="link" size="sm" type="button" asChild>
-                                <Link href="/auth/new-password">Forgot your password</Link>
-                            </Button>
                         </div>
                         <Button
                             type="submit"
@@ -97,7 +73,7 @@ export const LoginForm = () => {
                                 "w-full my-2",
                                 status === "executing" ? "animate-pulse" : ""
                             )}
-                        >Login</Button>
+                        >Reset password</Button>
                     </form>
                 </Form>
             </div>
