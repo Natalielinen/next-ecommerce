@@ -12,6 +12,7 @@ import { useState } from "react";
 import { FormInfo } from "./form-info";
 import { NewPasswordFormType, newPasswordSchema } from "@/types/new-password-schema";
 import { newPassword } from "@/server/actions/new-password";
+import { useSearchParams } from "next/navigation";
 
 export const NewPasswordForm = () => {
 
@@ -19,9 +20,11 @@ export const NewPasswordForm = () => {
         resolver: zodResolver(newPasswordSchema),
         defaultValues: {
             password: '',
-            token: ''
         }
     });
+
+    const searchParams = useSearchParams();
+    const token = searchParams.get("token");
 
     const [error, setError] = useState<string>("");
     const [success, setSuccess] = useState<string>("");
@@ -36,8 +39,7 @@ export const NewPasswordForm = () => {
     const { handleSubmit, control } = form;
 
     const onSubmit = (data: NewPasswordFormType) => {
-        execute(data);
-
+        execute({ password: data.password, token });
     };
 
     return (
