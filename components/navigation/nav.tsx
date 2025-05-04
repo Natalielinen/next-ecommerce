@@ -8,11 +8,11 @@ export default async function Nav() {
     const session = await auth();
 
     return (
-        <header className="py-8">
+        <header className="py-12">
             <nav>
                 <ul className="flex justify-between">
                     <li>
-                        <Link href="/">
+                        <Link href="/" aria-label="home">
                             Home
                         </Link>
                     </li>
