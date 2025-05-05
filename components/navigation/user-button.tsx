@@ -12,8 +12,15 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import Image from "next/image";
 import { LogOut, Moon, Settings, Sun, Truck } from "lucide-react";
+import { useTheme } from "next-themes";
+import { useState } from "react";
+import { Switch } from "@/components/ui/switch"
 
 export const UserButton = ({ user }: Session) => {
+
+    const { setTheme, theme } = useTheme();
+    const [checked, setChecked] = useState(false);
+
     if (user) {
         return (
             <DropdownMenu modal={false}>
@@ -59,11 +66,18 @@ export const UserButton = ({ user }: Session) => {
                     <DropdownMenuSeparator />
                     <DropdownMenuItem className="cursor-pointer"><Truck /> My orders</DropdownMenuItem>
                     <DropdownMenuItem className="cursor-pointer"><Settings /> Settings</DropdownMenuItem>
-                    <DropdownMenuItem className="cursor-pointer">
-                        <div className="flex items-center ">
-                            <Sun />
-                            <Moon />
-                            <p>Theme <span>theme</span> </p>
+                    <DropdownMenuItem className="cursor-pointer" >
+                        <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+                            {
+                                theme === "light" ? <Moon /> : <Sun />
+                            }
+
+                            <p>Theme <span>{theme}</span> </p>
+                            <Switch checked={checked} onCheckedChange={(e) => {
+                                setChecked((prev) => !prev);
+                                if (e) setTheme("dark");
+                                if (!e) setTheme("light");
+                            }} />
                         </div>
                     </DropdownMenuItem>
 
