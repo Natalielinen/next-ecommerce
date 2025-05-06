@@ -15,11 +15,15 @@ import { LogOut, Moon, Settings, Sun, Truck } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useState } from "react";
 import { Switch } from "@/components/ui/switch"
+import { Router } from "next/router";
+import { useRouter } from "next/navigation";
 
 export const UserButton = ({ user }: Session) => {
 
     const { setTheme, theme } = useTheme();
     const [checked, setChecked] = useState(false);
+
+    const router = useRouter();
 
     if (user) {
         return (
@@ -64,8 +68,18 @@ export const UserButton = ({ user }: Session) => {
                         </span>
                     </div>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem className="cursor-pointer"><Truck /> My orders</DropdownMenuItem>
-                    <DropdownMenuItem className="cursor-pointer"><Settings /> Settings</DropdownMenuItem>
+                    <DropdownMenuItem
+                        className="cursor-pointer"
+                        onClick={() => router.push('/dashboard/orders')}
+                    >
+                        <Truck /> My orders
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                        className="cursor-pointer"
+                        onClick={() => router.push('/dashboard/settings')}
+                    >
+                        <Settings /> Settings
+                    </DropdownMenuItem>
                     <DropdownMenuItem className="cursor-pointer" >
                         <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
                             {
