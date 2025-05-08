@@ -16,6 +16,8 @@ import Image from "next/image";
 import { FormInfo } from "@/components/auth/form-info";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import { useAction } from "next-safe-action/hooks";
+import { settings } from "@/server/actions/settings";
 
 type SettingsCardProps = {
     session: Session
@@ -43,8 +45,15 @@ export default function SettingsCard({
 
     const { handleSubmit, control } = form;
 
+    const { execute, status } = useAction(settings, {
+        onSuccess: (data) => {
+            if (data?.data?.error) setError(data?.data?.error);
+            if (data?.data?.success) setSuccess(data?.data?.success);
+        }
+    });
+
     const onSubmit = (data: SettingsFormType) => {
-        // execute(data);
+        execute(data);
 
     };
 
@@ -148,7 +157,7 @@ export default function SettingsCard({
                                         <Input
                                             placeholder="Password"
                                             type="password"
-                                            disabled={status === "executing"}
+                                            disabled={status === "executing" || session.user.isOAuth}
                                             {...field}
                                         />
                                     </FormControl>
@@ -168,7 +177,7 @@ export default function SettingsCard({
                                         <Input
                                             placeholder="New Password"
                                             type="password"
-                                            disabled={status === "executing"}
+                                            disabled={status === "executing" || session.user.isOAuth}
                                             {...field}
                                         />
                                     </FormControl>
@@ -182,6 +191,7 @@ export default function SettingsCard({
                         <Button
                             type="submit"
                             disabled={status === 'executing' || avatarUploading}
+                            className="mt-2"
                         >
                             Apply
                         </Button>
