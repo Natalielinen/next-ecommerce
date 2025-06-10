@@ -10,12 +10,10 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import Image from "next/image";
 import { LogOut, Moon, Settings, Sun, Truck } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useState } from "react";
 import { Switch } from "@/components/ui/switch"
-import { Router } from "next/router";
 import { useRouter } from "next/navigation";
 
 export const UserButton = ({ user }: Session) => {
@@ -25,18 +23,15 @@ export const UserButton = ({ user }: Session) => {
 
     const router = useRouter();
 
+    console.log(user);
+
     if (user) {
         return (
             <DropdownMenu modal={false}>
                 <DropdownMenuTrigger>
                     <Avatar>
                         {
-                            (user.image && user.name) && <AvatarImage>
-                                <Image
-                                    src={user.image}
-                                    alt={user.name}
-                                    fill
-                                />
+                            (user.image && user.name) && <AvatarImage src={user.image} alt={user.name}>
                             </AvatarImage>
                         }
                         {
@@ -49,12 +44,7 @@ export const UserButton = ({ user }: Session) => {
                     <div className="mb-4 p-4 flex flex-col gap-1 items-center bg-primary/10">
                         <Avatar>
                             {
-                                (user.image && user.name) && <AvatarImage>
-                                    <Image
-                                        src={user.image}
-                                        alt={user.name}
-                                        fill
-                                    />
+                                (user.image && user.name) && <AvatarImage src={user.image} alt={user.name}>
                                 </AvatarImage>
                             }
                             {

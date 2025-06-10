@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useAction } from "next-safe-action/hooks";
 import { settings } from "@/server/actions/settings";
+import { UploadButton } from "@/app/api/uploadthing/upload";
 
 type SettingsCardProps = {
     session: Session
@@ -131,7 +132,30 @@ export default function SettingsCard({
                                                 height={42}
                                             />
                                         }
-
+                                        <UploadButton
+                                            className="scale-75 ut-button:ring-primary ut-button:bg-primary/75 hover:ut-button: bg-primary/100 ut:button:transition-all ut-button:duration-500 ut-label:hidden ut-allowed-content:hidden"
+                                            endpoint="avatarUploader"
+                                            onUploadBegin={() => setAvatarUploading(true)}
+                                            onUploadError={(error) => {
+                                                setAvatarUploading(false);
+                                                form.setError('image', {
+                                                    type: 'validate',
+                                                    message: error.message
+                                                });
+                                                return;
+                                            }}
+                                            onClientUploadComplete={(res) => {
+                                                form.setValue('image', res[0].ufsUrl);
+                                                setAvatarUploading(false);
+                                                return;
+                                            }}
+                                            content={{
+                                                button({ ready }) {
+                                                    if (ready) return <div> Change avatar</div>
+                                                    return <div>Uploading...</div>
+                                                }
+                                            }}
+                                        />
                                     </div>
                                     <FormControl>
                                         <Input
