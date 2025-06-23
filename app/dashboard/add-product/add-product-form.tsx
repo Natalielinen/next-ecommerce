@@ -1,13 +1,12 @@
 'use client';
 
-import { AddProductFormType } from "@/types/add-product-schema";
+import { AddProductFormType, addProductSchema } from "@/types/add-product-schema";
 import { useForm } from "react-hook-form";
 import {
     Card,
     CardAction,
     CardContent,
     CardDescription,
-    CardFooter,
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
@@ -15,7 +14,6 @@ import { Button } from "@/components/ui/button";
 import {
     Form,
     FormControl,
-    FormDescription,
     FormField,
     FormItem,
     FormLabel,
@@ -23,16 +21,19 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { DollarSign } from "lucide-react";
-
+import Tiptap from "./tipap";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 export default function AddProductForm() {
 
     const form = useForm<AddProductFormType>({
+        resolver: zodResolver(addProductSchema),
         defaultValues: {
             title: '',
             description: '',
             price: 0
-        }
+        },
+        mode: 'onChange'
     });
 
     const onSubmit = (data: AddProductFormType) => console.log(data);
@@ -67,7 +68,7 @@ export default function AddProductForm() {
                                 <FormItem>
                                     <FormLabel>Product Description</FormLabel>
                                     <FormControl>
-                                        {/* <Input placeholder="Product Title" {...field} /> */}
+                                        <Tiptap val={field.value} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -99,9 +100,6 @@ export default function AddProductForm() {
                     </form>
                 </Form>
             </CardContent>
-            <CardFooter>
-                <p>Card Footer</p>
-            </CardFooter>
         </Card>
     )
 }
