@@ -23,6 +23,9 @@ import { Input } from "@/components/ui/input";
 import { DollarSign } from "lucide-react";
 import Tiptap from "./tipap";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useAction } from "next-safe-action/hooks";
+import { createProduct } from "@/server/actions/create-product";
+import { useState } from "react";
 
 export default function AddProductForm() {
 
@@ -36,7 +39,17 @@ export default function AddProductForm() {
         mode: 'onChange'
     });
 
-    const onSubmit = (data: AddProductFormType) => console.log(data);
+    const [error, setError] = useState<string>("");
+    const [success, setSuccess] = useState<string>("");
+
+    const { execute, status } = useAction(createProduct, {
+        onSuccess: (data) => {
+            if (data?.data?.error) setError(data?.data?.error);
+            if (data?.data?.success) setSuccess(data?.data?.success);
+        }
+    });
+
+    const onSubmit = (data: AddProductFormType) => execute(data);
 
     return (
         <Card>
@@ -93,7 +106,10 @@ export default function AddProductForm() {
                         <Button
                             className="w-full"
                             type="submit"
-                            disabled={status === "executing" || !form.formState.isValid || !form.formState.isDirty}
+                            disabled={
+                                status === "executing"
+                                || !form.formState.isValid
+                                || !form.formState.isDirty}
                         >
                             Submit
                         </Button>
