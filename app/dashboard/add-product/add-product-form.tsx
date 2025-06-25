@@ -26,6 +26,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useAction } from "next-safe-action/hooks";
 import { createProduct } from "@/server/actions/create-product";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner"
 
 export default function AddProductForm() {
 
@@ -42,10 +44,20 @@ export default function AddProductForm() {
     const [error, setError] = useState<string>("");
     const [success, setSuccess] = useState<string>("");
 
+    const router = useRouter();
+
     const { execute, status } = useAction(createProduct, {
         onSuccess: (data) => {
-            if (data?.data?.error) setError(data?.data?.error);
-            if (data?.data?.success) setSuccess(data?.data?.success);
+            if (data?.data?.error) {
+                toast.error(data?.data?.error);
+            }
+            if (data?.data?.success) {
+                router.push(`/dashboard/products`);
+                toast.success(data?.data?.success);
+            }
+        },
+        onExecute: () => {
+            toast.loading("Creating Product...");
         }
     });
 

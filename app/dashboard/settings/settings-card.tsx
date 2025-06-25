@@ -58,7 +58,6 @@ export default function SettingsCard({
 
     };
 
-
     return (
         <Card>
             <CardHeader>
