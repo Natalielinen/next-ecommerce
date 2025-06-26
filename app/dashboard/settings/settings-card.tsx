@@ -23,8 +23,6 @@ import { UploadButton } from "@/app/api/uploadthing/upload";
 type SettingsCardProps = {
     session: Session
 }
-
-
 export default function SettingsCard({
     session
 }: SettingsCardProps) {
